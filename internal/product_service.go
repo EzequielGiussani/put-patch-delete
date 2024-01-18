@@ -12,5 +12,7 @@ var (
 
 type ProductService interface {
 	Save(product *Product) error
-	GetById(id int) (*Product, error)
+	GetById(id int) (Product, error)
+	Update(Product *Product) error
+	Delete(id int) error
 }

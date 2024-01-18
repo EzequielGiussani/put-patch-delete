@@ -58,7 +58,7 @@ func (pd *ProductDefault) validateProduct(p *internal.Product) error {
 	return nil
 }
 
-func (pd *ProductDefault) GetById(id int) (*internal.Product, error) {
+func (pd *ProductDefault) GetById(id int) (internal.Product, error) {
 	prod, err := pd.rp.GetById(id)
 
 	if err != nil {
@@ -69,4 +69,35 @@ func (pd *ProductDefault) GetById(id int) (*internal.Product, error) {
 	}
 
 	return prod, err
+}
+
+func (pd *ProductDefault) Update(product *internal.Product) error {
+
+	if err := pd.validateProduct(product); err != nil {
+		return err
+	}
+
+	err := pd.rp.Update(product)
+
+	if err != nil {
+		switch err {
+		case internal.ErrProductNotFound:
+			err = fmt.Errorf("%w: id", internal.ErrProductNotFound)
+		}
+	}
+
+	return err
+}
+
+func (pd *ProductDefault) Delete(id int) error {
+	err := pd.rp.Delete(id)
+
+	if err != nil {
+		switch err {
+		case internal.ErrProductNotFound:
+			err = fmt.Errorf("%w: id", internal.ErrProductNotFound)
+		}
+	}
+
+	return err
 }
